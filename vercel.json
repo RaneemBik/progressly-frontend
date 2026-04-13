@@ -1,8 +1,5 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "framework": "react-vite",
-  "env": {
-    "VITE_API_URL": "@progressly_backend_url"
-  }
+  "framework": "vite"
 }
