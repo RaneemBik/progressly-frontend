@@ -29,14 +29,15 @@ const API_BASE = env.VITE_API_URL || env.VITE_API_BASE_URL || (() => {
     const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
 
     if (isLocal) {
-      return 'http://localhost:3000/api';
+      return 'http://localhost:3001/api';
     }
 
-    // Vercel monorepo deployment with backend routePrefix: /_/backend
-    return `${origin}/_/backend/api`;
+    // Production: use environment variable or direct API call
+    // Default assumes backend is at same domain
+    return `${origin}/api`;
   }
 
-  return 'http://localhost:3000/api';
+  return 'http://localhost:3001/api';
 })();
 const TOKEN_KEY = 'progressly_token';
 const USER_KEY  = 'progressly_user';
