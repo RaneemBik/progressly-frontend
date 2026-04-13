@@ -1,0 +1,62 @@
+/* @import url() FONT IMPORTS MUST ALWAYS BE AT THE VERY TOP */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* ── Base ───────────────────────────────────────────────── */
+body {
+  background-color: #07100F;
+  color: #E4F5EE;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: #07100F; }
+::-webkit-scrollbar-thumb  { background: #1C3D35; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #2D6352; }
+
+/* ── Glass ──────────────────────────────────────────────── */
+.glass-panel {
+  background: rgba(11, 26, 22, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(44, 90, 75, 0.45);
+}
+
+/* ── Shimmer skeleton ───────────────────────────────────── */
+.shimmer {
+  background: linear-gradient(90deg, #0D1F1A 25%, #162E26 50%, #0D1F1A 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
+
+/* ── Subtle gradient mesh on landing ───────────────────── */
+.landing-mesh {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(40,90,72,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(64,138,113,0.12) 0%, transparent 70%),
+    #07100F;
+}
+
+/* ── Drag ghost dim ─────────────────────────────────────── */
+[draggable="true"]:active { opacity: 0.6; }
+
+/* ── Smooth page transitions ────────────────────────────── */
+.page-enter { animation: fadeUp 0.35s ease forwards; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }
+
+/* ── Responsive utilities ──────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .glass-panel { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  html { font-size: 15px; }
+}
+
+/* Prevent horizontal overflow globally */
+body { overflow-x: hidden; }
+* { box-sizing: border-box; }

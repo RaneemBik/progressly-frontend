@@ -1,0 +1,12 @@
+﻿src/src/components/dashboard/ProjectCard.tsx(2,16): error TS6133: 'useNavigate' is declared but its value is never read.
+src/src/components/landing/ThreeBackground.tsx(2,24): error TS7016: Could not find a declaration file for module 'three'. 'C:/Users/user/Desktop/progressly-fullstack/progressly/frontend/node_modules/three/build/three.module.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/three` if it exists or add a new declaration (.d.ts) file containing `declare module 'three';`
+src/src/components/layout/Navbar.tsx(3,1): error TS6133: 'motion' is declared but its value is never read.
+src/src/components/layout/Sidebar.tsx(6,3): error TS6133: 'FolderKanban' is declared but its value is never read.
+src/src/components/layout/Sidebar.tsx(7,3): error TS6133: 'Settings' is declared but its value is never read.
+src/src/components/layout/Sidebar.tsx(8,3): error TS6133: 'Users' is declared but its value is never read.
+src/src/components/layout/Sidebar.tsx(9,3): error TS6133: 'Plus' is declared but its value is never read.
+src/src/components/layout/Sidebar.tsx(10,3): error TS6133: 'ChevronLeft' is declared but its value is never read.
+src/src/components/project/TaskCard.tsx(3,36): error TS6133: 'MessageSquare' is declared but its value is never read.
+src/src/pages/ProjectPage.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/src/pages/ProjectPage.tsx(4,37): error TS6133: 'Settings' is declared but its value is never read.
