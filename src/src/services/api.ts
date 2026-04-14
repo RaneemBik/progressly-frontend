@@ -22,6 +22,8 @@
 import { User, Project, Task, ProjectMember, Role, DependencyGraph } from '../types';
 
 const env = (import.meta as any).env || {};
+const DEFAULT_PROD_API_BASE = 'https://progressly-backend.onrender.com/api';
+
 function normalizeApiBase(url: string): string {
   const trimmed = url.trim().replace(/\/$/, '');
   return /\/api$/i.test(trimmed) ? trimmed : `${trimmed}/api`;
@@ -38,12 +40,11 @@ const API_BASE = configuredApiBase ? normalizeApiBase(configuredApiBase) : (() =
       return 'http://localhost:3001/api';
     }
 
-    // Production: use environment variable or direct API call
-    // Default assumes backend is at same domain
-    return `${origin}/api`;
+    // Production fallback: direct Render backend URL
+    return DEFAULT_PROD_API_BASE;
   }
 
-  return 'http://localhost:3001/api';
+  return DEFAULT_PROD_API_BASE;
 })();
 
 function stripApiSuffix(url: string): string {
@@ -75,7 +76,7 @@ async function req<T>(path: string, options: RequestInit = {}): Promise<T> {
   if (!primaryRes.ok) {
     const primaryText = await primaryRes.clone().text();
     const retryBase = stripApiSuffix(primaryBase);
-    const canRetry = configuredApiBase && retryBase !== primaryBase;
+    const canRetry = retryBase !== primaryBase;
 
     if (canRetry && shouldRetryWithApi(primaryRes, primaryText)) {
       res = await fetch(`${retryBase}${path}`, { ...options, headers });
