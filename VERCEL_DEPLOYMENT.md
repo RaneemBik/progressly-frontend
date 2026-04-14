@@ -22,7 +22,7 @@ This guide covers both static GitHub Pages deployment and Vercel deployment (rec
    - **Output Directory**: `dist`
    - **Install Command**: `npm install`
    - **Environment Variables**:
-     - `VITE_API_URL`: `https://progressly-backend.onrender.com`
+     - `VITE_API_URL`: `https://progressly-backend.onrender.com/api`
 
 5. Click "Deploy"
 
@@ -31,7 +31,7 @@ This guide covers both static GitHub Pages deployment and Vercel deployment (rec
 Add in Vercel Dashboard → Settings → Environment Variables:
 
 ```
-VITE_API_URL=https://progressly-backend.onrender.com
+VITE_API_URL=https://progressly-backend.onrender.com/api
 ```
 
 #### Custom Domain (Optional)
@@ -120,7 +120,7 @@ npm run preview
 In production, the frontend will connect to:
 
 ```
-https://progressly-backend.onrender.com
+https://progressly-backend.onrender.com/api
 ```
 
 Update `VITE_API_URL` environment variable on Vercel/GitHub Pages.

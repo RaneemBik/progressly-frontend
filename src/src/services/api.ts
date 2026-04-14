@@ -22,7 +22,13 @@
 import { User, Project, Task, ProjectMember, Role, DependencyGraph } from '../types';
 
 const env = (import.meta as any).env || {};
-const API_BASE = env.VITE_API_URL || env.VITE_API_BASE_URL || (() => {
+function normalizeApiBase(url: string): string {
+  const trimmed = url.trim().replace(/\/$/, '');
+  return /\/api$/i.test(trimmed) ? trimmed : `${trimmed}/api`;
+}
+
+const configuredApiBase = env.VITE_API_URL || env.VITE_API_BASE_URL;
+const API_BASE = configuredApiBase ? normalizeApiBase(configuredApiBase) : (() => {
   if (typeof window !== 'undefined' && window.location) {
     const origin = window.location.origin;
     const hostname = window.location.hostname;
@@ -39,6 +45,14 @@ const API_BASE = env.VITE_API_URL || env.VITE_API_BASE_URL || (() => {
 
   return 'http://localhost:3001/api';
 })();
+
+function stripApiSuffix(url: string): string {
+  return url.replace(/\/api$/i, '');
+}
+
+function shouldRetryWithApi(res: Response, bodyText: string): boolean {
+  return res.status === 404 && /cannot\s+post\s+\/auth\//i.test(bodyText);
+}
 const TOKEN_KEY = 'progressly_token';
 const USER_KEY  = 'progressly_user';
 
@@ -54,7 +68,20 @@ async function req<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = tokenStore.get();
   const headers: Record<string, string> = { 'Content-Type': 'application/json', ...(options.headers as any) };
   if (token) headers['Authorization'] = `Bearer ${token}`;
-  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+  const initialBase = configuredApiBase ? stripApiSuffix(configuredApiBase.trim().replace(/\/$/, '')) : API_BASE;
+  const primaryRes = await fetch(`${initialBase}${path}`, { ...options, headers });
+  let res = primaryRes;
+
+  if (!primaryRes.ok) {
+    const primaryText = await primaryRes.clone().text();
+    const retryBase = normalizeApiBase(initialBase);
+    const isDifferentBase = retryBase !== initialBase;
+
+    if (isDifferentBase && shouldRetryWithApi(primaryRes, primaryText)) {
+      res = await fetch(`${retryBase}${path}`, { ...options, headers });
+    }
+  }
+
   if (!res.ok) {
     let msg = `Error ${res.status}`;
     try { const b = await res.json(); msg = Array.isArray(b.message) ? b.message.join(', ') : (b.message || msg); } catch {}
