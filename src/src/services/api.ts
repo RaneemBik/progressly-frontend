@@ -51,7 +51,7 @@ function stripApiSuffix(url: string): string {
 }
 
 function shouldRetryWithApi(res: Response, bodyText: string): boolean {
-  return res.status === 404 && /cannot\s+post\s+\/auth\//i.test(bodyText);
+  return res.status === 404 && /cannot\s+(get|post|put|patch|delete)\s+\//i.test(bodyText);
 }
 const TOKEN_KEY = 'progressly_token';
 const USER_KEY  = 'progressly_user';
@@ -68,16 +68,16 @@ async function req<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = tokenStore.get();
   const headers: Record<string, string> = { 'Content-Type': 'application/json', ...(options.headers as any) };
   if (token) headers['Authorization'] = `Bearer ${token}`;
-  const initialBase = configuredApiBase ? stripApiSuffix(configuredApiBase.trim().replace(/\/$/, '')) : API_BASE;
-  const primaryRes = await fetch(`${initialBase}${path}`, { ...options, headers });
+  const primaryBase = API_BASE;
+  const primaryRes = await fetch(`${primaryBase}${path}`, { ...options, headers });
   let res = primaryRes;
 
   if (!primaryRes.ok) {
     const primaryText = await primaryRes.clone().text();
-    const retryBase = normalizeApiBase(initialBase);
-    const isDifferentBase = retryBase !== initialBase;
+    const retryBase = stripApiSuffix(primaryBase);
+    const canRetry = configuredApiBase && retryBase !== primaryBase;
 
-    if (isDifferentBase && shouldRetryWithApi(primaryRes, primaryText)) {
+    if (canRetry && shouldRetryWithApi(primaryRes, primaryText)) {
       res = await fetch(`${retryBase}${path}`, { ...options, headers });
     }
   }
